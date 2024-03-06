@@ -1,0 +1,51 @@
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            {{ __('Dashboard') }}
+        </h2>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900 dark:text-gray-100">
+                    {{ __("You're logged in!") }}
+                    <style>
+                    table {
+                    border-collapse: collapse; /* Убираем двойные линии */
+                    width: 100%; /* Ширина таблицы */
+                    border-spacing: 0; /* Расстояние между ячейками */
+                    }
+                    td {
+                    border: 2px solid #333; /* Параметры границ */
+                    padding: 4px; /* Поля в ячейках */
+                    text-align: center; /* Выравнивание по центру */
+                    }
+                    </style>
+                    <body>
+                    <
+                    {{Form::open(['route' => ['url.store'], 'method' => 'POST'])}}
+                    {{ Form::label('name', 'Название ссылки') }}
+                    {{ Form::text('name') }}
+                    {{ Form::label('link', 'Ссылка') }}
+                    {{ Form::text('link') }}
+                    {{Form::submit('Создать') }}
+                    {{ Form::close() }}
+                    <table>
+                        <tr><td><b>Название ссылки</b></td><td><b>Ссылка</b></td><td><b>Сокращенная ссылка</b></td><td><b>Удалить ссылку</b></td><td><b>Количество переходов по ссылке</b></td>
+                            </tr>
+                        @foreach($urls as $url)
+                        <tr><td>{{$url->name}}</td><td>{{$url->link}}</td><td><a href="{{route('url.redirect_counter',['code'=>$url->short_link])}}">http://127.0.0.1:8000/{{$url->short_link}}</a></td>
+                            <td> {{Form::model($url,['route' => ['url.destroy', $url->id], 'method' => 'DELETE'])}}
+                                    {{Form::submit('Удалить ссылку') }}
+                                    {{ Form::close() }}</td>
+                            <td>{{$url->count}}</td>
+                        </tr>
+                        @endforeach
+                    </table>
+                    </body>
+                </div>
+            </div>
+        </div>
+    </div>
+</x-app-layout>
