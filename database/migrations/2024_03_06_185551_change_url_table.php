@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('urls', function (Blueprint $table) {
-            $table->unsignedBigInteger('count')->default(0);
+            $table->integer('count')->default(0);
         });
     }
 

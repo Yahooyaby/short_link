@@ -10,8 +10,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     use HasFactory;
-    protected $fillable=['email','password'];
-    public function urls(){
+    protected $fillable = ['email','password'];
+
+    public function urls()
+    {
         return $this->hasMany(Url::class);
     }
 
