@@ -17,10 +17,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return redirect()->route('login');
+    return redirect()->route('urls');
 });
 
-Route::post('/store_url',[UrlController::class,'store'])->name('url.store');
+Route::post('/urls/store',[UrlController::class,'store'])->name('urls.store');
 
 Route::get('/urls',[UrlController::class,'index'])->middleware(['auth', 'verified'])->name('urls');
 
