@@ -17,16 +17,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return redirect()->route('urls');
+    return redirect()->route('urls.index');
 });
 
 Route::post('/urls/store',[UrlController::class,'store'])->name('urls.store');
 
-Route::get('/urls',[UrlController::class,'index'])->middleware(['auth', 'verified'])->name('urls');
+Route::get('/urls',[UrlController::class,'index'])->middleware(['auth', 'verified'])->name('urls.index');
 
-Route::get('/redirect_counter/{code}',[UrlController::class,'redirect_counter'])->name('url.redirect_counter');
+Route::get('/redirect_counter/{code}',[UrlController::class,'redirect_counter'])->name('urls.redirect_counter');
 
-Route::delete('/urls/{url}', [UrlController::class, 'destroy'])->name('url.destroy');
+Route::delete('/urls/{url}', [UrlController::class, 'destroy'])->name('urls.destroy');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UrlsStoreRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Models\Url;
@@ -16,23 +17,14 @@ class UrlController extends Controller
         $urls = Url::where('user_id',$request->user()->id)->get();
         return view('urls',['urls'=>$urls]);
     }
-    public function store(Request $request) :RedirectResponse
+    public function store(UrlsStoreRequest $request) :RedirectResponse
     {
-        $request->validate([
-            'name'=>['required','unique:urls,name','max:255'],
-            'link'=>['required','unique:urls,link']
-        ]);
-//        $link = Url::create([
-//            'name'=>$request->name,
-//            'link'=>$request->link,
-//            'user_id'=>$request->user()->id,
-//            'short_link'=>Str::random(8)
-//        ]);
+
         $request->user()->urls()->create([
-            'name'=>$request->name,
-            'link'=>$request->link,
-            'user_id'=>$request->user()->id,
-            'short_link'=>Str::random(8)
+            'name' => $request->name,
+            'link' => $request->link,
+            'user_id' => $request->user()->id,
+            'short_link' => Str::random(8)
         ]);
         return redirect()->back();
 
@@ -45,10 +37,10 @@ class UrlController extends Controller
     public function redirect_counter(string $code)
     {
         $url =Url::where('short_link',$code)->first();
-        if($url){
-         return   redirect()->route('urls')->with('success','Такой сслыки не существует');
+        if(!$url){
+         return   redirect()->route('urls.index')->with('failure','Такой сслыки не существует');
         }
-        $url->update(['count'=> $url->count +1]);
+        $url->update(['count' => $url->count +1]);
 //        dd($url->link);
         return redirect($url->link);
     }
