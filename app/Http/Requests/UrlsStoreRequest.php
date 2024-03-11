@@ -40,8 +40,9 @@ class UrlsStoreRequest extends FormRequest
     public function attributes()
     {
         return [
-          'name' => 'Имя',
+            'name' => 'Имя',
             'link' => 'Ссылка'
+
         ];
     }
 }
