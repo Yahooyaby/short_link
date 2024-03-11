@@ -2,36 +2,45 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UrlsStoreRequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Models\Url;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class UrlController extends Controller
 {
-    public function index(Request $request){
-        $counter = 0;
+    public function index(Request $request):View
+    {
         $urls = Url::where('user_id',$request->user()->id)->get();
-        return view('dashboard',['urls'=>$urls,'counter'=>$counter]);
+        return view('urls',['urls'=>$urls]);
     }
-    public function store(Request $request){
-        $link = Url::create([
-            'name'=>$request->name,
-            'link'=>$request->link,
-            'user_id'=>$request->user()->id,
-            'short_link'=>Str::random(8)
+    public function store(UrlsStoreRequest $request) :RedirectResponse
+    {
+
+        $request->user()->urls()->create([
+            'name' => $request->name,
+            'link' => $request->link,
+            'user_id' => $request->user()->id,
+            'short_link' => Str::random(8)
         ]);
         return redirect()->back();
 
     }
-    public function destroy(Url $url){
+    public function destroy(Url $url):RedirectResponse
+    {
         $url->delete();
         return redirect()->back();
     }
-    public function redirect_counter(string $code){
-
+    public function redirect_counter(string $code)
+    {
         $url =Url::where('short_link',$code)->first();
-        $url->update(['count'=> $url->count +1]);
+        if(!$url){
+         return   redirect()->route('urls.index')->with('failure','Такой сслыки не существует');
+        }
+        $url->update(['count' => $url->count +1]);
 //        dd($url->link);
         return redirect($url->link);
     }

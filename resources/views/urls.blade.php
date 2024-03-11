@@ -1,3 +1,8 @@
+@if(session('failure'))
+    <div class="alert alert-success">
+        {{session('failure')}}
+    </div>
+@endif
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
@@ -24,7 +29,7 @@
                     </style>
                     <body>
                     <
-                    {{Form::open(['route' => ['url.store'], 'method' => 'POST'])}}
+                    {{Form::open(['route' => ['urls.store'], 'method' => 'POST'])}}
                     {{ Form::label('name', 'Название ссылки') }}
                     {{ Form::text('name') }}
                     {{ Form::label('link', 'Ссылка') }}
@@ -35,8 +40,8 @@
                         <tr><td><b>Название ссылки</b></td><td><b>Ссылка</b></td><td><b>Сокращенная ссылка</b></td><td><b>Удалить ссылку</b></td><td><b>Количество переходов по ссылке</b></td>
                             </tr>
                         @foreach($urls as $url)
-                        <tr><td>{{$url->name}}</td><td>{{$url->link}}</td><td><a href="{{route('url.redirect_counter',['code'=>$url->short_link])}}">http://127.0.0.1:8000/{{$url->short_link}}</a></td>
-                            <td> {{Form::model($url,['route' => ['url.destroy', $url->id], 'method' => 'DELETE'])}}
+                        <tr><td>{{$url->name}}</td><td>{{$url->link}}</td><td><a href="{{route('urls.redirect_counter',['code'=>$url->short_link])}}">{{config('app.url')}}/{{$url->short_link}}</a></td>
+                            <td> {{Form::model($url,['route' => ['urls.destroy', $url->id], 'method' => 'DELETE'])}}
                                     {{Form::submit('Удалить ссылку') }}
                                     {{ Form::close() }}</td>
                             <td>{{$url->count}}</td>
