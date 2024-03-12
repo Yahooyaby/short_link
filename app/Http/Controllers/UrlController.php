@@ -22,7 +22,7 @@ class UrlController extends Controller
         else {
             $urls = Url::where('user_id', $request->user()->id)->get();
         }
-        return view('urls',['urls'=>$urls,'is_admin'=>$request->user()->is_admin]);
+        return view('urls',['urls'=>$urls]);
     }
     public function store(UrlsStoreRequest $request) :RedirectResponse
     {
@@ -36,12 +36,9 @@ class UrlController extends Controller
         return redirect()->back();
 
     }
-    public function destroy(Url $url, Request $request):RedirectResponse
+    public function destroy(Request $request, Url $url ):RedirectResponse
     {
-        if ($request->user()->is_admin){
-            $url->delete();
-        }
-        elseif ($request->user()->id === $url->user_id){
+        if ($request->user()->is_admin || $request->user()->id === $url->user_id){
             $url->delete();
         }
         return redirect()->back();

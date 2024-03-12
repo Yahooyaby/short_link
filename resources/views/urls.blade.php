@@ -45,7 +45,7 @@
                                     {{Form::submit('Удалить ссылку') }}
                                     {{ Form::close() }}</td>
                             <td>{{$url->count}}</td>
-                             @if($is_admin)
+                             @if(Auth::user()->is_admin)
                                 <td>{{$url->user->email }}</td>
                              @endif
                         </tr>
