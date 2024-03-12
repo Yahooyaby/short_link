@@ -18,12 +18,12 @@
                     <style>
                     table {
                     border-collapse: collapse; /* Убираем двойные линии */
-                    width: 100%; /* Ширина таблицы */
+                    width: 5%; /* Ширина таблицы */
                     border-spacing: 0; /* Расстояние между ячейками */
                     }
                     td {
                     border: 2px solid #333; /* Параметры границ */
-                    padding: 4px; /* Поля в ячейках */
+                    padding: 1px; /* Поля в ячейках */
                     text-align: center; /* Выравнивание по центру */
                     }
                     </style>
@@ -45,6 +45,9 @@
                                     {{Form::submit('Удалить ссылку') }}
                                     {{ Form::close() }}</td>
                             <td>{{$url->count}}</td>
+                             @if($is_admin)
+                                <td>{{$url->user->email }}</td>
+                             @endif
                         </tr>
                         @endforeach
                     </table>
