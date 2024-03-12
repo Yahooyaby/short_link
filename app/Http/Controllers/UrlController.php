@@ -16,12 +16,8 @@ class UrlController extends Controller
 {
     public function index(Request $request):View
     {
-        if($request->user()->is_admin){
-            $urls = Url::all();
-        }
-        else {
-            $urls = Url::where('user_id', $request->user()->id)->get();
-        }
+        $request->user()->can('viewAny',Url::class) ?
+            $urls = Url::all() : $urls = Url::where('user_id', $request->user()->id)->get();
         return view('urls',['urls'=>$urls]);
     }
     public function store(UrlsStoreRequest $request) :RedirectResponse
@@ -38,9 +34,9 @@ class UrlController extends Controller
     }
     public function destroy(Request $request, Url $url ):RedirectResponse
     {
-        if ($request->user()->is_admin || $request->user()->id === $url->user_id){
+        $this->authorize('delete',$url);
             $url->delete();
-        }
+
         return redirect()->back();
     }
     public function redirect_counter(string $code)
