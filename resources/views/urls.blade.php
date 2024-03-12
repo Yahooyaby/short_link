@@ -37,6 +37,9 @@
                     {{ Form::close() }}
                     <table>
                         <tr><td><b>Название ссылки</b></td><td><b>Ссылка</b></td><td><b>Сокращенная ссылка</b></td><td><b>Удалить ссылку</b></td><td><b>Количество переходов по ссылке</b></td>
+                            @can('viewAny',App\Models\Url::class)
+                            <td><b>Имя пользователя</b></td>
+                            @endcan
                             </tr>
                         @foreach($urls as $url)
                         <tr><td>{{$url->name}}</td><td>{{$url->link}}</td><td><a href="{{route('urls.redirect_counter',['code'=>$url->short_link])}}">{{config('app.url')}}/{{$url->short_link}}</a></td>

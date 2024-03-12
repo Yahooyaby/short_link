@@ -34,9 +34,9 @@ class UrlController extends Controller
     }
     public function destroy(Request $request, Url $url ):RedirectResponse
     {
-        if ($request->user()->can('delete',Url::class) || $request->user()->id === $url->user_id){
+        $this->authorize('delete',$url);
             $url->delete();
-        }
+
         return redirect()->back();
     }
     public function redirect_counter(string $code)

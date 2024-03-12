@@ -20,8 +20,10 @@ class UrlPolicy
         return $user->is_admin;
     }
 
-    public function delete(User $user)
+    public function delete(User $user,Url $url)
     {
-        return $user->is_admin;
+        if ($user->is_admin || ($user->id === $url->user_id)){
+            return true;
+        }
     }
 }
