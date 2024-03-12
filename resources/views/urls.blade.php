@@ -28,7 +28,6 @@
                     }
                     </style>
                     <body>
-                    <
                     {{Form::open(['route' => ['urls.store'], 'method' => 'POST'])}}
                     {{ Form::label('name', 'Название ссылки') }}
                     {{ Form::text('name') }}
@@ -45,9 +44,9 @@
                                     {{Form::submit('Удалить ссылку') }}
                                     {{ Form::close() }}</td>
                             <td>{{$url->count}}</td>
-                             @if(Auth::user()->is_admin)
+                             @can('viewAny',$url)
                                 <td>{{$url->user->email }}</td>
-                             @endif
+                            @endcan
                         </tr>
                         @endforeach
                     </table>
