@@ -14,7 +14,6 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("You're logged in!") }}
                     <style>
                     table {
                     border-collapse: collapse; /* Убираем двойные линии */
@@ -28,6 +27,12 @@
                     }
                     </style>
                     <body>
+                    @can('viewAny',\App\Models\Url::class)
+                        {{Form::open(['route' => ['urls.index'], 'method' => 'get'])}}
+                        {{Form::select('users[]', $users->pluck('email', 'id'), null, ['multiple'=>'multiple','class' => 'form-control'])}}
+                        {{Form::submit('Применить')}}
+                        {{Form::close()}}
+                    @endcan
                     {{Form::open(['route' => ['urls.store'], 'method' => 'POST'])}}
                     {{ Form::label('name', 'Название ссылки') }}
                     {{ Form::text('name') }}
