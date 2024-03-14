@@ -17,9 +17,19 @@ class UrlController extends Controller
     public function index(Request $request):View
     {
 //        dd($request->query('users'));
+
         $users = User::all();
-        $request->user()->can('viewAny',Url::class) ?
-            ($request->query()? $urls =Url::whereIn('user_id',$request->query('users'))->get() :$urls = Url::all()) : $urls = Url::where('user_id', $request->user()->id)->get();
+//        $request->user()->can('viewAny',Url::class) ?
+//            ($request->query()? $urls =Url::whereIn('user_id',$request->users)->get() :$urls = Url::all()) : $urls = Url::where('user_id', $request->user()->id)->get();
+        if($request->user()->can('viewAny',Url::class)){
+            if($request->users){
+                $urls =Url::whereIn('user_id',$request->users)->get();
+            } else {
+                $urls = Url::all();
+            }
+        } else {
+            $urls = Url::where('user_id', $request->user()->id)->get();
+        }
         return view('urls',['urls'=>$urls,'users'=>$users]);
     }
     public function store(UrlsStoreRequest $request) :RedirectResponse
