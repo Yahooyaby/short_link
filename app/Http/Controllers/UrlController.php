@@ -16,19 +16,16 @@ class UrlController extends Controller
 {
     public function index(Request $request):View
     {
-//        dd($request->query('users'));
 
         $users = User::all();
 //        $request->user()->can('viewAny',Url::class) ?
 //            ($request->query()? $urls =Url::whereIn('user_id',$request->users)->get() :$urls = Url::all()) : $urls = Url::where('user_id', $request->user()->id)->get();
+        $urlsQuery = Url::query()->get();
         if($request->user()->can('viewAny',Url::class)){
-            if($request->users){
-                $urls =Url::whereIn('user_id',$request->users)->get();
-            } else {
-                $urls = Url::all();
-            }
+            $request->users ?
+                $urls = $urlsQuery->whereIn('user_id',$request->users):$urls = $urlsQuery;
         } else {
-            $urls = Url::where('user_id', $request->user()->id)->get();
+            $urls = $urlsQuery->where('user_id', $request->user()->id);
         }
         return view('urls',['urls'=>$urls,'users'=>$users]);
     }
