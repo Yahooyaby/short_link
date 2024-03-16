@@ -15,15 +15,20 @@ class UrlPolicy
         //
     }
 
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
-        return $user->is_admin;
+        return $user->isAdmin();
     }
 
-    public function delete(User $user,Url $url)
+    public function delete(User $user, Url $url): bool
     {
-        if ($user->is_admin || ($user->id === $url->user_id)){
-            return true;
+        if (!$url->user()->where('is_admin', true)->whereNot('id', $user->id)->exists()) {
+            return $user->isAdmin() || $user->id === $url->user_id;
         }
+        return false;
+    }
+
+    public function redirect(User $user, Url $url):bool {
+        return $user->isAdmin() || $user->id === $url->user_id;
     }
 }

@@ -16,13 +16,21 @@ class UrlController extends Controller
 {
     public function index(Request $request):View
     {
-        $request->user()->can('viewAny',Url::class) ?
-            $urls = Url::all() : $urls = Url::where('user_id', $request->user()->id)->get();
-        return view('urls',['urls'=>$urls]);
+        $urls = Url::query()->when($request->user()->cannot('viewAny',Url::class), function ($query) use ($request) {
+            $query->where('user_id', $request->user()->id);
+        }, function ($query) use($request) {
+            $query->when($request->users, function ($query) use ($request) {
+                $query->whereIn('user_id', $request->users);
+            });
+        })->get();
+
+        return view('urls',[
+            'urls' => $urls,
+            'users' => User::all()
+        ]);
     }
     public function store(UrlsStoreRequest $request) :RedirectResponse
     {
-
         $request->user()->urls()->create([
             'name' => $request->name,
             'link' => $request->link,
@@ -41,11 +49,13 @@ class UrlController extends Controller
     }
     public function redirect_counter(string $code)
     {
-        $url =Url::where('short_link',$code)->first();
-        if(!$url){
-         return   redirect()->route('urls.index')->with('failure','Такой сслыки не существует');
+        if($url = Url::where('short_link',$code)->first()) {
+            $this->authorize('redirect', $url);
+            $url->update(['count' => $url->count +1]);
+            return redirect($url->link);
         }
-        $url->update(['count' => $url->count +1]);
-        return redirect($url->link);
+
+        return redirect()->route('urls.index')->with('failure','Такой сслыки не существует');
     }
+
 }
