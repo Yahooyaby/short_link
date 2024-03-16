@@ -16,22 +16,21 @@ class UrlController extends Controller
 {
     public function index(Request $request):View
     {
+        $urls = Url::query()->when($request->user()->cannot('viewAny',Url::class), function ($query) use ($request) {
+            $query->where('user_id', $request->user()->id);
+        }, function ($query) use($request) {
+            $query->when($request->users, function ($query) use ($request) {
+                $query->whereIn('user_id', $request->users);
+            });
+        })->get();
 
-        $users = User::all();
-//        $request->user()->can('viewAny',Url::class) ?
-//            ($request->query()? $urls =Url::whereIn('user_id',$request->users)->get() :$urls = Url::all()) : $urls = Url::where('user_id', $request->user()->id)->get();
-        $urlsQuery = Url::query();
-        if($request->user()->can('viewAny',Url::class)){
-            $request->users ?
-                $urlsQuery->whereIn('user_id',$request->users): $urlsQuery;
-        } else {
-           $urlsQuery->where('user_id', $request->user()->id);
-        }
-        return view('urls',['urls'=> $urlsQuery->get(),'users'=>$users]);
+        return view('urls',[
+            'urls' => $urls,
+            'users' => User::all()
+        ]);
     }
     public function store(UrlsStoreRequest $request) :RedirectResponse
     {
-
         $request->user()->urls()->create([
             'name' => $request->name,
             'link' => $request->link,
@@ -50,12 +49,13 @@ class UrlController extends Controller
     }
     public function redirect_counter(string $code)
     {
-        $url =Url::where('short_link',$code)->first();
-        if(!$url){
-         return   redirect()->route('urls.index')->with('failure','Такой сслыки не существует');
+        if($url = Url::where('short_link',$code)->first()) {
+            $this->authorize('redirect', $url);
+            $url->update(['count' => $url->count +1]);
+            return redirect($url->link);
         }
-        $url->update(['count' => $url->count +1]);
-        return redirect($url->link);
+
+        return redirect()->route('urls.index')->with('failure','Такой сслыки не существует');
     }
 
 }
