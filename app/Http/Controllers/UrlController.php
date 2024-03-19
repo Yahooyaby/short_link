@@ -22,9 +22,13 @@ class UrlController extends Controller
             $query->when($request->users, function ($query) use ($request) {
                 $query->whereIn('user_id', $request->users);
             });
-        });       
+        });
         if($request->sub_link){
             $urlQuery->where('link','like','%'.$request->sub_link.'%');
+        }
+
+        if($request->sort){
+            $urlQuery->orderBy('count','desc');
         }
 
         return view('urls',[

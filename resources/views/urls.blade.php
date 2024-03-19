@@ -35,23 +35,26 @@
     {{ Form::text('link') }}
     {{Form::submit('Создать') }}
     {{ Form::close() }}
+
+
+    {{Form::open(['route' => ['urls.index'],'method'=>'GET'])}}
     @can('viewAny',App\Models\Url::class)
-    Фильтрация пользователей
-    {{Form::open(['route' => ['urls.index',$users->pluck('id')],'method'=>'GET'])}}
+        Фильтрация пользователей
     {{Form::select('users[]', $users->pluck('email', 'id'), null, ['multiple'=>'multiple','class' => 'form-control'])}}
-    {{ Form::label('sub_link', 'Имя ссылки') }}
-    {{ Form::text('sub_link') }}
-    {{Form::submit("Filter")}}
     @endcan
-    {{ Form::close() }}
-    @cannot('viewAny',App\Models\Url::class)
+    <br>
     Поиск по ссылке
-    {{Form::open(['route'=>['urls.index'],'method' => 'GET'])}}
+    <br>
     {{ Form::label('sub_link', 'Имя ссылки') }}
     {{ Form::text('sub_link') }}
-    {{Form::submit("Поиск")}}
+    <br>
+    Сортировка
+    <br>
+    Возрастание
+    {{Form::radio('sort',true)}}
+    {{Form::submit("Сортировать")}}
     {{ Form::close() }}
-    @endcannot
+
     <table>
         <tr><td><b>Название ссылки</b></td>
             <td><b>Ссылка</b></td>
