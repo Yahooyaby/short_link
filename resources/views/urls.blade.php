@@ -39,16 +39,19 @@
     Фильтрация пользователей
     {{Form::open(['route' => ['urls.index',$users->pluck('id')],'method'=>'GET'])}}
     {{Form::select('users[]', $users->pluck('email', 'id'), null, ['multiple'=>'multiple','class' => 'form-control'])}}
+    {{ Form::label('sub_link', 'Имя ссылки') }}
+    {{ Form::text('sub_link') }}
     {{Form::submit("Filter")}}
+    @endcan
     {{ Form::close() }}
-        @endcan
+    @cannot('viewAny',App\Models\Url::class)
     Поиск по ссылке
     {{Form::open(['route'=>['urls.index'],'method' => 'GET'])}}
     {{ Form::label('sub_link', 'Имя ссылки') }}
     {{ Form::text('sub_link') }}
     {{Form::submit("Поиск")}}
     {{ Form::close() }}
-
+    @endcannot
     <table>
         <tr><td><b>Название ссылки</b></td>
             <td><b>Ссылка</b></td>
