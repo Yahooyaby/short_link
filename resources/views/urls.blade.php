@@ -42,6 +42,13 @@
     {{Form::submit("Filter")}}
     {{ Form::close() }}
         @endcan
+    Поиск по ссылке
+    {{Form::open(['route'=>['urls.index'],'method' => 'GET'])}}
+    {{ Form::label('sub_link', 'Имя ссылки') }}
+    {{ Form::text('sub_link') }}
+    {{Form::submit("Поиск")}}
+    {{ Form::close() }}
+
     <table>
         <tr><td><b>Название ссылки</b></td>
             <td><b>Ссылка</b></td>

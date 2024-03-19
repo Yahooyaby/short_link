@@ -16,18 +16,24 @@ class UrlController extends Controller
 {
     public function index(Request $request):View
     {
-
-        $users = User::all();
-//        $request->user()->can('viewAny',Url::class) ?
-//            ($request->query()? $urls =Url::whereIn('user_id',$request->users)->get() :$urls = Url::all()) : $urls = Url::where('user_id', $request->user()->id)->get();
-        $urlsQuery = Url::query();
-        if($request->user()->can('viewAny',Url::class)){
-            $request->users ?
-                $urlsQuery->whereIn('user_id',$request->users): $urlsQuery;
-        } else {
-           $urlsQuery->where('user_id', $request->user()->id);
+        $urlQuery = Url::query()->when($request->user()->cannot('viewAny',Url::class), function ($query) use ($request) {
+            $query->where('user_id', $request->user()->id);
+        }, function ($query) use ($request) {
+            $query->when($request->users, function ($query) use ($request) {
+                $query->whereIn('user_id', $request->users);
+            });
+        });       ##$query->where('link','like','%'.$request->sub_link.'%');
+//        dd($request->sub_link);
+        if($request->sub_link){
+            $urlQuery->where('link','like','%'.$request->sub_link.'%');
         }
-        return view('urls',['urls'=> $urlsQuery->get(),'users'=>$users]);
+
+
+        $urls  = $urlQuery->get();
+        return view('urls',[
+            'urls' => $urls,
+            'users' => User::all()
+        ]);
     }
     public function store(UrlsStoreRequest $request) :RedirectResponse
     {
