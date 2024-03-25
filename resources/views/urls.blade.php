@@ -41,7 +41,7 @@
     @can('viewAny',App\Models\Url::class)
         Фильтрация пользователей
     {{Form::select('users[]', $users->pluck('email', 'id'), null, ['multiple'=>'multiple','class' => 'form-control'])}}
-    @endcan
+
     <br>
     Поиск по ссылке
     <br>
@@ -54,7 +54,7 @@
     {{Form::radio('sort',true)}}
     {{Form::submit("Сортировать")}}
     {{ Form::close() }}
-
+    @endcan
     <table>
         <tr><td><b>Название ссылки</b></td>
             <td><b>Ссылка</b></td>
